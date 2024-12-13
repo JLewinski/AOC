@@ -1,16 +1,5 @@
-import { assertEquals } from "@std/assert/equals";
-import { readInput } from "../main.ts";
 
-Deno.test("AOC1", async () => {
-    const result = await main();
-    assertEquals(result[0], 1941353);
-    assertEquals(result[1], 22539317);
-});
-
-const day = 1;
-
-export default async function main() {
-    const input = await readInput(day);
+export default function main(input:string) {
     const [arr1, arr2] = parseInput(input);
     const differenceScore = arr1
         .map((x, i) => Math.abs(x - arr2[i]))

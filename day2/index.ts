@@ -1,14 +1,5 @@
-import { assertEquals } from "@std/assert/equals";
-import { readInput } from "../main.ts";
-const day = 2;
 
-Deno.test("AOC2", async () => {
-    const result = await main();
-    assertEquals(result.numValid, 516);
-});
-
-export default async function main() {
-    const input = await readInput(day);
+export default function main(input: string) {
     const reports = parseInput(input);
 
     const numValid = reports.map(x => ({ report: x, valid: isValid(x) })).filter(x => x.valid).length;

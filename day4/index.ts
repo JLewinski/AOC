@@ -1,32 +1,19 @@
-import { readInput } from "../main.ts";
-const day = 4;
-
-Deno.test("AOC4", async () => {
-    const result = await main();
-    console.log(result);
-    // assertEquals(result.noDo, 173785482);
-    // assertEquals(result.filteredDisabled, 83158140);
-});
-
-export default async function main() {
-    const input = await readInput(day);
+export default function main(input: string) {
     const wordSearch = input.split("\n").map((line) => line.split(""));
-    const found = search(wordSearch, "XMAS");
-
-    return { found };
+    return search(wordSearch, "XMAS", "MAS");
 }
 
 
-function search(wordSearch: string[][], word: string) {
+function search(wordSearch: string[][], word: string, wordX: string) {
     let found = 0;
+    let foundX = 0;
     for (let i = 0; i < wordSearch.length; i++) {
         for (let j = 0; j < wordSearch[i].length; j++) {
-            if (wordSearch[i][j] === word[0]) {
-                found += searchWord(wordSearch, word, i, j);
-            }
+            found += searchWord(wordSearch, word, i, j);
+            foundX += searchX(wordSearch, wordX, i, j) ? 1 : 0;
         }
     }
-    return found;
+    return {found, foundX};
 }
 
 enum Direction {
@@ -40,57 +27,37 @@ enum Direction {
     leftDown
 }
 
-function move(x: number, y: number, dir: Direction) {
+function move(x: number, y: number, dir: Direction, num = 1) {
     switch (dir) {
         case Direction.right:
-            x++;
+            x += num;
             break;
         case Direction.left:
-            x--;
+            x -= num;
             break;
         case Direction.up:
-            y--;
+            y -= num;
             break;
         case Direction.down:
-            y++;
+            y += num;
             break;
         case Direction.rightUp:
-            x++;
-            y--;
+            x += num;
+            y -= num;
             break;
         case Direction.rightDown:
-            x++;
-            y++;
+            x += num;
+            y += num;
             break;
         case Direction.leftUp:
-            x--;
-            y--;
+            x -= num;
+            y -= num;
             break;
         case Direction.leftDown:
-            x--;
-            y++;
+            x -= num;
+            y += num;
             break;
     }
-
-    // if (x < 0) {
-    //     y--;
-    //     x = wordSearch.length - 1;
-    // }
-
-    // if (x >= wordSearch.length) {
-    //     y++;
-    //     x = 0;
-    // }
-
-    // if (y < 0) {
-    //     x--;
-    //     y = wordSearch[0]?.length - 1;
-    // }
-
-    // if (y >= wordSearch[0].length) {
-    //     x++;
-    //     y = 0;
-    // }
 
     return [x, y];
 }
@@ -98,42 +65,43 @@ function move(x: number, y: number, dir: Direction) {
 function checkDir(wordSearch: string[][], i: number, j: number, searchTerm: string, dir: Direction) {
     let word = '';
 
-    while (i >= 0 && i < wordSearch.length && j >= 0 && j < wordSearch[i].length && word.length < searchTerm.length && word[word.length - 1] == searchTerm[word.length - 1]) {
+    while (i >= 0 && i < wordSearch.length && j >= 0 && j < wordSearch[i].length && word.length < searchTerm.length) {
         word += wordSearch[i][j];
         [j, i] = move(j, i, dir);
     }
-    return word === searchTerm;
+    return word;
 }
 
 function searchWord(wordSearch: string[][], word: string, i: number, j: number) {
     //iterate through all directions
     let found = 0;
 
-    if (checkDir(wordSearch, i, j, word, Direction.right)) { found++; console.log('right', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.left)) { found++; console.log('left', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.up)) { found++; console.log('up', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.down)) { found++; console.log('down', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.rightUp)) { found++; console.log('rightUp', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.rightDown)) { found++; console.log('rightDown', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.leftUp)) { found++; console.log('leftUp', i, j); }
-    if (checkDir(wordSearch, i, j, word, Direction.leftDown)) { found++; console.log('leftDown', i, j); }
+    if (word == checkDir(wordSearch, i, j, word, Direction.right)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.left)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.up)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.down)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.rightUp)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.rightDown)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.leftUp)) { found++; }
+    if (word == checkDir(wordSearch, i, j, word, Direction.leftDown)) { found++; }
 
     return found;
 }
 
 function searchX(wordSearch: string[][], word: string, i: number, j: number) {
-    
-    const halfLength = word.length / 2;
+
+    const halfLength = parseInt((word.length / 2).toFixed(0)) - 1;
     const middle = word[halfLength];
 
-    if (wordSearch[i][j] !== middle || i == 0 || j == 0 || i == wordSearch.length - 1 || j == wordSearch[i].length - 1) {
+    if (wordSearch[i][j] !== middle) {
         return false;
     }
 
-    const result = ['', '', '', ''];
-    for (let k = 0; k < word.length / 2; k++) {
-        result[0] += wordSearch[i][j + k];
-    }
+    
+    let [x, y] = move(j, i, Direction.leftUp, halfLength);
+    const diag1 = checkDir(wordSearch, y, x, word, Direction.rightDown);
+    [x, y] = move(j, i, Direction.rightUp, halfLength);
+    const diag2 = checkDir(wordSearch, y, x, word, Direction.leftDown);
 
-    return found === word.length;
+    return (diag1 == word || diag1.split('').reverse().join('') == word) && (diag2 == word || diag2.split('').reverse().join('') == word);
 }
