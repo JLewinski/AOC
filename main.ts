@@ -2,7 +2,7 @@ let day: number = 1;
 
 if (import.meta.main) {
 
-  for(const entry of Deno.readDirSync('.')){
+  for(const entry of Deno.readDirSync('./2024/')){
     if (!entry.isDirectory || !entry.name.startsWith('day')) {
       continue;
     }
@@ -21,9 +21,8 @@ if (import.meta.main) {
   }
 
 
-  import(`./day${day}/index.ts`).then(async program => {
-
-    const input = await Deno.readTextFile(`./day${day}/input.txt`);
+  import(`./2024/day${day}/index.ts`).then(async program => {
+    const input = await Deno.readTextFile(`./2024/day${day}/input.txt`);
 
     const result = program.default(input);
 
