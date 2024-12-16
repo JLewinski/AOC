@@ -70,13 +70,19 @@ class Region {
                 switch (side) {
                     case 'left':
                     case 'right':
-                        if (this.nodeMap[`${node.x},${node.y - 1}`]?.sideLocations.includes(side) || this.nodeMap[`${node.x},${node.y + 1}`]?.sideLocations.includes(side)) {
+                        if (this.nodeMap[`${node.x},${node.y - 1}`]?.sideLocations.includes(side)) {
+                            this._sides--;
+                        }
+                        if (this.nodeMap[`${node.x},${node.y + 1}`]?.sideLocations.includes(side)) {
                             this._sides--;
                         }
                         break;
                     case 'up':
                     case 'down':
-                        if (this.nodeMap[`${node.x - 1},${node.y}`]?.sideLocations.includes(side) || this.nodeMap[`${node.x + 1},${node.y}`]?.sideLocations.includes(side)) {
+                        if (this.nodeMap[`${node.x - 1},${node.y}`]?.sideLocations.includes(side)) {
+                            this._sides--;
+                        }
+                        if (this.nodeMap[`${node.x + 1},${node.y}`]?.sideLocations.includes(side)) {
                             this._sides--;
                         }
                         break;
