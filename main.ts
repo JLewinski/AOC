@@ -24,7 +24,7 @@ if (import.meta.main) {
   import(`./2024/day${day}/index.ts`).then(async program => {
     const input = await Deno.readTextFile(`./2024/day${day}/input.txt`);
 
-    const result = program.default(input);
+    const result = await program.default(input);
 
     console.log(result);
   });

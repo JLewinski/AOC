@@ -1,10 +1,14 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@cm-iv/queue@*": "1.0.0",
     "jsr:@std/assert@1": "1.0.9",
     "jsr:@std/internal@^1.0.5": "1.0.5"
   },
   "jsr": {
+    "@cm-iv/queue@1.0.0": {
+      "integrity": "0dc1da37987077e765240a73f7164196fca065ce585fcb542f8db50831078f0a"
+    },
     "@std/assert@1.0.9": {
       "integrity": "a9f0c611a869cc791b26f523eec54c7e187aab7932c2c8e8bea0622d13680dcd",
       "dependencies": [
